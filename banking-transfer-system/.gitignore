@@ -1,0 +1,83 @@
+# Ignore Visual Studio temporary files, build results, and
+# folder-based project configuration.
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Uncomment if you have tasks that create the following files, 
+# or use NuGet packages that require these files.
+#*.dll
+#*.exe
+#*.pdb
+#*.mdb
+#*.prm
+#*.config
+
+# Ignore NuGet Packages folder
+*.nupkg
+packages/
+
+# Ignore .NET Core local packages, project model and SDK generated files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.rsuser
+*.dotsettings
+.vscode/
+
+# Ignore NPM package files and lock file
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore log files
+*.log
+
+# Ignore coverage tool output
+coverage/
+*.coverage
+*.coveragexml
+*.log
+
+# Ignore additional folders for certain Visual Studio workloads
+.vscode/
+.vs/
+
+# Ignore database, build, or deployment files
+*.mdf
+*.ldf
+*.ndf
+publish/
+sql/
+.env
+
+# Ignore JetBrains Rider project files
+.idea/
+.idea/*
+*.sln.iml
+.idea_modules/
+
+# Ignore temporary files
+~$*
+
+# Ignore unnecessary OS-specific files
+.DS_Store
+Thumbs.db
