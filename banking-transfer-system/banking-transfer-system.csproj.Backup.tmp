@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EF\DTOs\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

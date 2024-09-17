@@ -1,4 +1,10 @@
+using banking_transfer_system.EF.Datas;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+// Configuracion de PostgreSQL en el DbContext
+builder.Services.AddDbContext<BankTransferContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 
