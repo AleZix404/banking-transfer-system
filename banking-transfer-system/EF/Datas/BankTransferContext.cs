@@ -14,7 +14,6 @@ namespace banking_transfer_system.EF.Datas
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuracion de las relaciones
             modelBuilder.Entity<Transfer>()
                 .HasOne(t => t.SourceAccount)
                 .WithMany(a => a.OutgoingTransfers)
