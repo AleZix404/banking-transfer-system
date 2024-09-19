@@ -6,6 +6,7 @@ namespace banking_transfer_system.EF.Datas
     {
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public BankTransferContext(DbContextOptions<BankTransferContext> options)
             : base(options)
