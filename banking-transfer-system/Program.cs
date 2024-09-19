@@ -8,9 +8,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console() 
+    .WriteTo.File("logs/banking-transfer-system.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 var key = builder.Configuration["Jwt:Key"];
 
@@ -27,17 +36,17 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "http://localhost",  
+        ValidIssuer = "http://localhost",
         ValidAudience = "http://localhost",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
     };
 });
 
-// Configuracion de PostgreSQL en el DbContext
+// Configuración de PostgreSQL en el DbContext
 builder.Services.AddDbContext<BankTransferContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Inyeccion de dependencias: Repositorios y Servicios
+// Inyección de dependencias: Repositorios y Servicios
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITransferRepository, TransferRepository>();
 builder.Services.AddScoped<ITransferService, TransferService>();
@@ -46,6 +55,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+// Configuración de Swagger con anotaciones habilitadas
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -57,19 +67,21 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
 });
 
-// Add services to the container.
+// Añadir controladores
 builder.Services.AddControllers();
 
-// Configuracion de Swagger
+// Configuración de Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging(); // Habilita el logging de las solicitudes HTTP
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
+// Configurar el pipeline de HTTP request
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -77,8 +89,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

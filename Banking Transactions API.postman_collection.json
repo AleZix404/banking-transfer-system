@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "a6f34bfc-cda2-444b-9dcf-3bf2fb759aee",
+		"name": "Banking Transactions API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18914785"
+	},
+	"item": [
+		{
+			"name": "UserRegister",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "UserLogin",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "CreateTransfer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqdWFuIHBlcmV6IiwianRpIjoiNTNhZWU5MmUtNjY1Ni00M2UzLWIwZjEtMDI3MDZjNzQ5NDI3IiwiaWQiOiIxIiwiZXhwIjoxNzI2NzU4OTUwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdCJ9.xVRqnFSDPCp-2CmkqtsKykNrGMN0ecHfcHC_doSzwqM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"SourceAccountNumber\": \"123456789\",\r\n  \"DestinationAccountNumber\": \"123456712\",\r\n  \"Amount\": 10000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.100.10:5003/api/account/createTransfer",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"10"
+					],
+					"port": "5003",
+					"path": [
+						"api",
+						"account",
+						"createTransfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ReadStatusAccount",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5003/api/account/status/987654321",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5003",
+					"path": [
+						"api",
+						"account",
+						"status",
+						"987654321"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ReadHistoryAccount",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
