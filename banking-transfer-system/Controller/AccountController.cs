@@ -3,6 +3,7 @@ using banking_transfer_system.Services.Interfaces;
 using banking_transfer_system.SingleClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace banking_transfer_system.Controller
@@ -30,16 +31,24 @@ namespace banking_transfer_system.Controller
         {
             try
             {
+                Log.Information("Intentando crear una transferencia entre la cuenta {SourceAccount} y {DestinationAccount} por un monto de {Amount}",
+                    transferDto.SourceAccountNumber, transferDto.DestinationAccountNumber, transferDto.Amount);
+
                 await _transferService.CreateTransferAsync(transferDto);
+                Log.Information("Transferencia creada exitosamente entre {SourceAccount} y {DestinationAccount}",
+                    transferDto.SourceAccountNumber, transferDto.DestinationAccountNumber);
+
                 return Ok();
             }
             catch (ArgumentException ex)
             {
+                Log.Warning("Error en la creación de la transferencia: {Message}", ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Ocurrio un error inesperado: {ex.Message}");
+                Log.Error(ex, "Ocurrio un error inesperado al intentar crear la transferencia");
+                return StatusCode(500, $"Ocurrió un error inesperado: {ex.Message}");
             }
         }
 
@@ -53,18 +62,23 @@ namespace banking_transfer_system.Controller
         {
             try
             {
+                Log.Information("Consultando el historial de transferencias para la cuenta {AccountNumber}", accountNumber);
+
                 var history = await _transferService.GetAccountHistoryAsync(accountNumber);
 
                 if (history == null || !history.Any())
                 {
+                    Log.Warning("No se encontraron transferencias para la cuenta {AccountNumber}", accountNumber);
                     return NotFound("No se encontraron transferencias para el numero de cuenta proporcionado.");
                 }
 
+                Log.Information("Historial de transferencias obtenido para la cuenta {AccountNumber}", accountNumber);
                 return Ok(history);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Ocurrio un error inesperado: {ex.Message}");
+                Log.Error(ex, "Ocurrio un error inesperado al consultar el historial de transferencias para la cuenta {AccountNumber}", accountNumber);
+                return StatusCode(500, $"Ocurrió un error inesperado: {ex.Message}");
             }
         }
 
@@ -76,12 +90,17 @@ namespace banking_transfer_system.Controller
         [SwaggerResponse(500, "Error inesperado")]
         public async Task<IActionResult> GetAccountStatus(string accountNumber)
         {
-            var account = await _accountService.GetAccountStatusAsync(accountNumber);
-
             try
             {
+                Log.Information("Consultando el estado de la cuenta {AccountNumber}", accountNumber);
+
+                var account = await _accountService.GetAccountStatusAsync(accountNumber);
+
                 if (account == null)
+                {
+                    Log.Warning("La cuenta {AccountNumber} no existe", accountNumber);
                     return NotFound("La cuenta no existe.");
+                }
 
                 var accountDto = new AccountDto
                 {
@@ -89,10 +108,12 @@ namespace banking_transfer_system.Controller
                     Balance = account.Balance
                 };
 
+                Log.Information("Estado de cuenta obtenido para la cuenta {AccountNumber}", accountNumber);
                 return Ok(accountDto);
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Ocurrio un error inesperado al consultar el estado de la cuenta {AccountNumber}", accountNumber);
                 return StatusCode(500, $"Ocurrio un error inesperado: {ex.Message}");
             }
         }

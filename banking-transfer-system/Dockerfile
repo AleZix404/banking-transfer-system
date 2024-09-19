@@ -1,17 +1,22 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR bankingTransferSystem
-EXPOSE 80
-EXPOSE 5000
+# Usa la imagen oficial de .NET SDK con soporte multi-arquitectura
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /app
 
-#Copiar archivos de proyecto
-COPY ./*.csproj ./
+# Copia los archivos del proyecto y restaura las dependencias
+COPY *.csproj ./
 RUN dotnet restore
 
-COPY . .
+# Copia el resto de los archivos y construye la aplicacion
+COPY . ./
 RUN dotnet publish -c Release -o out
 
-#Build Image
-FROM mcr.microsoft.com/dotnet/sdk:8.0
-WORKDIR /bankingTransferSystem
-COPY --from=build /bankingTransferSystem/out .
-ENTRYPOINT ["dotnet","banking-transfer-system.dll"]
+# Usa la imagen runtime de .NET con soporte multi-arquitectura
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+
+# Expone el puerto 80 para el trafico HTTP
+EXPOSE 80
+
+# Configura la entrada para ejecutar la aplicacion
+ENTRYPOINT ["dotnet", "banking-transfer-system.dll"]
